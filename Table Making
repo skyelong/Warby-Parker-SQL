@@ -30,3 +30,30 @@ on purchase.user_id = home_try_on.user_id
 limit 10;
 
 --However, T/F prevents summing easily, so first code is used. 
+--Calculating conversions
+--Funnel for Purchase
+WITH funnel AS(
+SELECT DISTINCT quiz.user_id AS 'User', 
+home_try_on.user_id is not null as 'Home_Try_On',
+  home_try_on.number_of_pairs as 'pairs', 
+  purchase.user_id is not null as 'Made_Purchase'
+from quiz
+Left Join home_try_on
+on home_try_on.user_id = quiz.user_id
+left join purchase
+on purchase.user_id = home_try_on.user_id)
+
+SELECT 
+pairs,
+COUNT(user) as 'Survey_Takers_Total',
+SUM(home_try_on) as 'Home_Try_On_Total',
+SUM(made_purchase) as 'Made_Purchase_Total',
+100 * SUM(made_purchase)/SUM(home_try_on)  as '%_made_purchase'
+FROM funnel
+GROUP BY 1;
+
+SELECT model_name, count(distinct user_id)
+from purchase
+group by 1
+order by 2 desc;
+
