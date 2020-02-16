@@ -6,7 +6,27 @@ on home_try_on.user_id = quiz.user_id
 left join purchase
 on purchase.user_id = home_try_on.user_id
 limit 10;
-SELECT * FROM purchase
-LIMIT 5;
 
---Try using a Case
+
+--Try using a Case to change TRUE & FALSE
+SELECT DISTINCT quiz.user_id, 
+Case
+  When home_try_on.user_id is not null then 'TRUE'
+  WHEN home_try_on.user_id is null then 'FALSE'
+END AS 'is_home_try_on',
+CASE
+  WHEN home_try_on.number_of_pairs IS NOT NULL THEN home_try_on.number_of_pairs
+  WHEN home_try_on.number_of_pairs IS NULL THEN 'NULL'
+  END AS 'number_of_pairs', 
+CASE
+  WHEN purchase.user_id is not null THEN 'TRUE'
+  WHEN purchase.user_id is Null then 'FALSE'
+END as 'is_purchase'
+from quiz
+Left Join home_try_on
+on home_try_on.user_id = quiz.user_id
+left join purchase
+on purchase.user_id = home_try_on.user_id
+limit 10;
+
+--However, T/F prevents summing easily, so first code is used. 
