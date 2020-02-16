@@ -47,3 +47,19 @@ left join q5
 on q5.user_id = q4.user_id)
 
 ;
+
+funnels as(
+select q1.user_id as 'Q1', q2.user_id IS NOT NULL as 'Q2', q3.user_id IS NOT NULL as 'Q3', q4.user_id IS NOT NULL as 'Q4', q5.user_id IS NOT NULL as 'Q5'
+from q1
+left join q2 
+on q2.user_id = q1.user_id
+left join q3
+on q3.user_id = q2.user_id
+left join q4
+on q4.user_id = q3.user_id
+left join q5
+on q5.user_id = q4.user_id)
+
+Select count(distinct user_id) as 'Q1', sum(Q2) as 'Q2', sum(Q3) as 'Q3', sum(Q4) as 'Q4', sum(Q5) as 'Q5'
+From funnels;
+
