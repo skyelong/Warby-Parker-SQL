@@ -1,0 +1,59 @@
+SELECT * FROM survey
+LIMIT 10;
+
+SELECT question, COUNT(DISTINCT user_id) as 'Number of Users' FROM survey
+GROUP BY question;
+
+With q1 as (
+select 
+*
+from survey
+where question like '%1.%'),
+
+q2 as (
+select 
+*
+from survey
+where question like '%2.%'),
+
+q3 as (
+select 
+*
+from survey
+where question like '%3.%'),
+
+q4 as (
+select 
+*
+from survey
+where question like '%4.%'),
+
+q5 as (
+select 
+*
+from survey
+where question like '%5.%'),
+
+funnels as(
+select q1.user_id as 'Q1', q2.user_id IS NOT NULL as 'Q2', q3.user_id IS NOT NULL as 'Q3', q4.user_id IS NOT NULL as 'Q4', q5.user_id IS NOT NULL as 'Q5'
+from q1
+left join q2 as 'q2'
+on q2.user_id = q1.user_id
+left join q3
+on q3.user_id = q2.user_id
+left join q4
+on q4.user_id = q3.user_id
+left join q5
+on q5.user_id = q4.user_id)
+
+select 
+count (Q1) as 'Inital Customers', 
+100 * SUM(Q2)/ COUNT(Q1) as 'Q2 Percent Conversion',
+100 * SUM(Q3)/ SUM(Q2) as 'Q3 Percent Conversion',
+100 * SUM(Q4)/ SUM(Q3) as 'Q4 Percent Conversion',
+100 * SUM(Q5)/ SUM(Q4) as 'Q5 Percent Conversion',
+100 * SUM(Q2)/ COUNT(Q1) as 'Q2 Percent of Initial',
+100 * SUM(Q3)/Count(Q1) as 'Q3 Percent of Inital',
+100 * SUM(Q4)/Count(Q1) as 'Q4 Percent of Inital',
+100 * SUM(Q5)/Count(Q1) as 'Q5 Percent of Inital'
+from funnels;
