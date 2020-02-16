@@ -1,0 +1,12 @@
+--Code for merging three tables. Need to change the 1 & 0 to True and False
+SELECT quiz.user_id, home_try_on.user_id is not null as 'is_home_try_on', home_try_on.number_of_pairs as 'number_of_pairs', purchase.user_id is not null as 'is_purchase'
+from quiz
+Left Join home_try_on
+on home_try_on.user_id = quiz.user_id
+left join purchase
+on purchase.user_id = home_try_on.user_id
+limit 10;
+SELECT * FROM purchase
+LIMIT 5;
+
+--Try using a Case
