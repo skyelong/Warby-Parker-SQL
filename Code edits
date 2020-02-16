@@ -1,0 +1,49 @@
+SELECT * FROM survey
+LIMIT 10;
+
+SELECT question, COUNT(DISTINCT user_id) as 'Number of Users' FROM survey
+GROUP BY question;
+
+With q1 as (
+select 
+*
+from survey
+where question like '%1.%'),
+
+q2 as (
+select 
+*
+from survey
+where question like '%2.%'),
+
+q3 as (
+select 
+*
+from survey
+where question like '%3.%'),
+
+q4 as (
+select 
+*
+from survey
+where question like '%4.%'),
+
+q5 as (
+select 
+*
+from survey
+where question like '%5.%'),
+
+funnels as(
+select * 
+from q1
+left join q2
+on q2.user_id = q1.user_id
+left join q3
+on q3.user_id = q2.user_id
+left join q4
+on q4.user_id = q3.user_id
+left join q5
+on q5.user_id = q4.user_id)
+
+;
